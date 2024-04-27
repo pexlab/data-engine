@@ -1,0 +1,34 @@
+<nav>
+
+    <svg-icon name="logo"></svg-icon>
+
+    <div class="items">
+
+        <a [routerLink]="['/introduction']" routerLinkActive="active">
+            <span>Introduction</span>
+        </a>
+
+        <a [routerLink]="['/getting-started']" routerLinkActive="active">
+            <span>Getting started</span>
+        </a>
+
+        <a [routerLink]="['/showcase']" routerLinkActive="active">
+            <span>Showcase</span>
+        </a>
+
+        <a [routerLink]="['/examples']" routerLinkActive="active">
+            <span>Examples</span>
+        </a>
+
+    </div>
+</nav>
+
+<nav>
+    <router-outlet name="sidebar"></router-outlet>
+</nav>
+
+<div class="page">
+    <router-outlet></router-outlet>
+</div>
+
+<fe-root></fe-root>

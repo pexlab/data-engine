@@ -1,0 +1,40 @@
+{
+    "name"            : "@pexlab/ngx-data-engine",
+    "description"     : "Various utilities to ease access to data",
+    "author"          : {
+        "name" : "PexLab",
+        "email": "opensource@pexlab.net",
+        "url"  : "https://www.pexlab.net"
+    },
+    "contributors"    : [
+        {
+            "name" : "David van der Sluijs",
+            "email": "david.van-der-sluijs@pexlab.net",
+            "url"  : "https://www.slatedave.de"
+        },
+        {
+            "name" : "Philipp Glaubitz",
+            "email": "philipp.glaubitz@pexlab.net",
+            "url"  : "https://github.com/PhilippGlaubitz"
+        }
+    ],
+    "repository"      : {
+        "type": "git",
+        "url" : "https://github.com/pexlab/data-engine.git"
+    },
+    "bugs"            : {
+        "url": "https://github.com/pexlab/data-engine/issues"
+    },
+    "version"         : "0.0.1",
+    "private"         : true,
+    "license"         : "MIT",
+    "homepage"        : "https://pexlab.net/projects/data-engine",
+    "peerDependencies": {
+        "@angular/common": "^17.3.0",
+        "@angular/core"  : "^17.3.0"
+    },
+    "dependencies"    : {
+        "tslib": "^2.3.0"
+    },
+    "sideEffects"     : false
+}

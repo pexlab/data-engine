@@ -1,0 +1,98 @@
+@use '@pexlab/ngx-front-engine/assets/fe-styles/theme';
+@use '@pexlab/ngx-front-engine/assets/fe-styles/utils';
+
+body {
+
+    margin : utils.rem(2.5);
+
+    @include theme.commonFont('body');
+
+    & * {
+        box-sizing : border-box;
+    }
+
+    & a {
+
+        text-decoration : none;
+
+        color           : darkblue;
+
+        @include theme.commonFont('body');
+
+        @include utils.hover {
+            text-decoration : underline;
+        }
+    }
+
+    & br, & img {
+        user-select : none;
+    }
+
+    & h1 {
+        @include theme.commonFont('heading');
+    }
+
+    & h2 {
+        @include theme.commonFont('subheading');
+    }
+
+    & h3 {
+        @include theme.commonFont('subheading');
+    }
+
+    & h4 {
+        @include theme.commonFont('subheading');
+    }
+
+    & hr {
+        border-top    : utils.rem(.06) solid theme.commonHex('background-tertiary');
+        border-left   : none;
+        border-bottom : none;
+        border-right  : none;
+    }
+
+    & nav {
+
+        color       : #6a6a6a;
+        user-select : none;
+        @include theme.commonFont('decorative');
+
+        & a, & a:hover, & a:focus, & a:active {
+            text-decoration : none;
+            color           : inherit;
+            @include theme.commonFont('decorative');
+        }
+
+        & > .items {
+
+            width          : fit-content;
+            display        : grid;
+            grid-auto-flow : column;
+            grid-gap       : utils.rem(3);
+
+            & > * {
+                cursor : pointer;
+            }
+
+            & > a {
+
+                padding       : utils.rem(.65) utils.rem(1);
+                border-radius : utils.rem(.31);
+
+                white-space   : nowrap;
+
+                &.active {
+                    background : #dddddd;
+                }
+            }
+        }
+    }
+
+    .container {
+        width          : utils.rem(30);
+        max-width      : 100%;
+        display        : grid;
+        grid-auto-flow : row;
+        grid-gap       : utils.rem(1.25);
+    }
+}

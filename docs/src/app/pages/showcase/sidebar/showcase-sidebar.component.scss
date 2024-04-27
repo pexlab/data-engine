@@ -1,0 +1,32 @@
+@use '@pexlab/ngx-front-engine/assets/fe-styles/utils';
+
+:host {
+
+    display : block;
+
+    width   : 100%;
+
+    margin  : utils.rem(1) 0;
+
+    & > a {
+
+        width                      : utils.opRem('100% -', 1);
+        height                     : utils.rem(3.45);
+
+        display                    : grid;
+        align-items                : center;
+
+        cursor                     : pointer;
+
+        border-top-right-radius    : utils.maxValue();
+        border-bottom-right-radius : utils.maxValue();
+
+        &.active {
+            background : #dddddd;
+        }
+
+        & > span {
+            padding-left : utils.rem(1.25);
+        }
+    }
+}

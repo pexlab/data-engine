@@ -1,0 +1,90 @@
+@use '@pexlab/ngx-front-engine/assets/fe-styles/theme';
+@use '@pexlab/ngx-front-engine/assets/fe-styles/utils';
+
+:host {
+
+    display    : block;
+
+    position   : absolute;
+
+    top        : 0;
+    left       : 0;
+
+    width      : utils.vw(100);
+    height     : utils.vh(100);
+
+    background : #eeeeee;
+
+    & > nav {
+
+        & > svg-icon {
+
+            display     : grid;
+            place-items : center;
+
+            width       : utils.rem((5 * 2.5) - (1.25 * 2));
+
+            & > svg {
+                width : 100%;
+            }
+        }
+
+        &:nth-child(1) {
+
+            position              : fixed;
+
+            top                   : 0;
+            left                  : 0;
+
+            width                 : utils.vw(100);
+            height                : utils.rem(5);
+
+            border-bottom         : utils.rem(.15) solid #dddddd;
+
+            display               : grid;
+            grid-auto-flow        : column;
+            grid-template-columns : utils.rem(5 * 2.5) 1fr;
+            grid-gap              : utils.rem(1.25);
+
+            align-items           : center;
+
+            @include theme.scrollbar(#dddddd, #dddddd, transparent, 'x', utils.rem(.5), utils.rem(.25));
+
+            & > svg-icon {
+                justify-self : center;
+            }
+        }
+
+        &:nth-child(2) {
+
+            position     : fixed;
+
+            top          : utils.rem(5);
+            left         : 0;
+
+            width        : utils.rem(5 * 2.5);
+            height       : calc(#{utils.rawVh(100) + ' - ' + utils.rawRem(5)});
+
+            border-right : utils.rem(.15) solid #dddddd;
+
+            @include theme.scrollbar(#dddddd, #dddddd, transparent, 'y', utils.rem(.5), utils.rem(.25));
+
+            background   : #eeeeee;
+        }
+    }
+
+    & > .page {
+
+        position : absolute;
+
+        left     : utils.rem(5 * 2.5);
+        top      : utils.rem(5);
+
+        width    : calc(#{utils.rawVw(100) + ' - ' + utils.rawRem(5 * 2.5)});
+        height   : calc(#{utils.rawVh(100) + ' - ' + utils.rawRem(5)});
+
+        padding  : utils.rem(2.2);
+
+        @include theme.scrollbar(#dddddd, #dddddd, transparent, 'y', utils.rem(.5), utils.rem(.25));
+    }
+}
