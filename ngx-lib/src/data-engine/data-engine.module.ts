@@ -1,5 +1,7 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
+import { prepare } from '@pexlab/data-engine';
 import { DataEngineService } from './data-engine.service';
+import { DateEngineServiceOptions } from './data-engine.interface';
 
 @NgModule( {
     declarations: [],
@@ -7,10 +9,16 @@ import { DataEngineService } from './data-engine.service';
     exports     : []
 } )
 export class DataEngineModule {
-    static forRoot(): ModuleWithProviders<DataEngineModule> {
+    static forRoot( config: DateEngineServiceOptions ): ModuleWithProviders<DataEngineModule> {
         return {
             ngModule : DataEngineModule,
-            providers: [ DataEngineService ]
+            providers: [
+                DataEngineService,
+                {
+                    provide : 'DataEngineMetadata',
+                    useValue: prepare( config.definitions )
+                }
+            ]
         };
     }
 }

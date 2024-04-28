@@ -9,6 +9,13 @@
         "paths"                             : {
             "@pexlab/ngx-data-engine": [
                 "./dist/ngx-data-engine"
+            ],
+            "@pexlab/data-engine"    : [
+                "./lib"
+            ],
+            "@pexlab/rxdb"           : [
+                "./node_modules/rxdb",
+                "./node_modules/rxdb/src/types"
             ]
         },
         "noImplicitReturns"                 : true,

@@ -1,66 +1,75 @@
 {
-    "name"           : "@pexlab/data-engine",
-    "description"    : "Various utilities to ease access to data",
-    "author"         : {
-        "name" : "PexLab",
-        "email": "opensource@pexlab.net",
-        "url"  : "https://www.pexlab.net"
+  "name": "@pexlab/data-engine",
+  "description": "Various utilities to ease access to data",
+  "author": {
+    "name": "PexLab",
+    "email": "opensource@pexlab.net",
+    "url": "https://www.pexlab.net"
+  },
+  "contributors": [
+    {
+      "name": "David van der Sluijs",
+      "email": "david.van-der-sluijs@pexlab.net",
+      "url": "https://www.slatedave.de"
     },
-    "contributors"   : [
-        {
-            "name" : "David van der Sluijs",
-            "email": "david.van-der-sluijs@pexlab.net",
-            "url"  : "https://www.slatedave.de"
-        },
-        {
-            "name" : "Philipp Glaubitz",
-            "email": "philipp.glaubitz@pexlab.net",
-            "url"  : "https://github.com/PhilippGlaubitz"
-        }
-    ],
-    "repository"     : {
-        "type": "git",
-        "url" : "https://github.com/pexlab/data-engine.git"
-    },
-    "bugs"           : {
-        "url": "https://github.com/pexlab/data-engine/issues"
-    },
-    "version"        : "0.0.1",
-    "private"        : true,
-    "license"        : "MIT",
-    "homepage"       : "https://pexlab.net/projects/data-engine",
-    "scripts"        : {
-        "serve_docs"   : "ng serve --configuration development --project docs",
-        "serve_ngx_lib": "ng build --configuration development --project ngx-lib --watch",
-        "build_docs"   : "ng build --configuration production --project docs --base-href https://www.pexlab.net/projects/data-engine/",
-        "build_ngx_lib": "ng build --configuration production --project ngx-lib"
-    },
-    "dependencies"   : {
-        "@angular/animations"              : "^17.3.0",
-        "@angular/common"                  : "^17.3.0",
-        "@angular/compiler"                : "^17.3.0",
-        "@angular/core"                    : "^17.3.0",
-        "@angular/forms"                   : "^17.3.0",
-        "@angular/platform-browser"        : "^17.3.0",
-        "@angular/platform-browser-dynamic": "^17.3.0",
-        "@angular/router"                  : "^17.3.0",
-        "@pexlab/ngx-front-engine"         : "^0.0.84",
-        "rxjs"                             : "~7.8.0",
-        "tslib"                            : "^2.3.0",
-        "zone.js"                          : "~0.14.3"
-    },
-    "devDependencies": {
-        "@angular-devkit/build-angular": "^17.3.6",
-        "@angular/cli"                 : "^17.3.6",
-        "@angular/compiler-cli"        : "^17.3.0",
-        "@types/jasmine"               : "~5.1.0",
-        "jasmine-core"                 : "~5.1.0",
-        "karma"                        : "~6.4.0",
-        "karma-chrome-launcher"        : "~3.2.0",
-        "karma-coverage"               : "~2.2.0",
-        "karma-jasmine"                : "~5.1.0",
-        "karma-jasmine-html-reporter"  : "~2.1.0",
-        "ng-packagr"                   : "^17.3.0",
-        "typescript"                   : "~5.4.2"
+    {
+      "name": "Philipp Glaubitz",
+      "email": "philipp.glaubitz@pexlab.net",
+      "url": "https://github.com/PhilippGlaubitz"
     }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pexlab/data-engine.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pexlab/data-engine/issues"
+  },
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "homepage": "https://pexlab.net/projects/data-engine",
+  "scripts": {
+    "serve_docs": "ng serve --configuration development --project docs",
+    "serve_ngx_lib": "ng build --configuration development --project ngx-lib --watch",
+    "build_docs": "ng build --configuration production --project docs --base-href https://www.pexlab.net/projects/data-engine/",
+    "build_ngx_lib": "ng build --configuration production --project ngx-lib"
+  },
+  "dependencies": {
+    "@angular/animations": "^17.3.0",
+    "@angular/common": "^17.3.0",
+    "@angular/compiler": "^17.3.0",
+    "@angular/core": "^17.3.0",
+    "@angular/forms": "^17.3.0",
+    "@angular/platform-browser": "^17.3.0",
+    "@angular/platform-browser-dynamic": "^17.3.0",
+    "@angular/router": "^17.3.0",
+    "@pexlab/ngx-front-engine": "^0.0.84",
+    "nanoid": "^5.0.7",
+    "p-lazy": "^4.0.0",
+    "p-min-delay": "^4.0.2",
+    "rxdb": "^15.18.4",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zod": "^3.23.4",
+    "zone.js": "~0.14.3"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^17.3.6",
+    "@angular/cli": "^17.3.6",
+    "@angular/compiler-cli": "^17.3.0",
+    "@types/jasmine": "~5.1.0",
+    "jasmine-core": "~5.1.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "ng-packagr": "^17.3.0",
+    "typescript": "~5.4.2"
+  },
+  "trustedDependencies": [
+    "protobufjs",
+    "rxdb"
+  ]
 }
