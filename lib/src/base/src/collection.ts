@@ -1,44 +1,48 @@
-import { inject, Inject } from '@angular/core';
-import { AlertPortalService } from '@pexlab/ngx-front-engine';
 import PLazy from 'p-lazy';
 import pMinDelay from 'p-min-delay';
 import { RxError } from 'rxdb/dist/types/rx-error';
 import { BehaviorSubject, catchError, firstValueFrom, map, Observable, Subscription, tap } from 'rxjs';
 import { z } from 'zod';
-import { IntermediateCollection } from './types/types';
+import { ErrorHandler } from './error.handler';
+import { IntermediateCollection } from './types';
 import { DocumentIdentifier, ForCreate, ForUpdate, startEmittingAfter, subscriptionCallback } from './utils';
 
-export class Collection<Doc> {
+export class Collection<DocumentType> {
     
-    private alert = inject(AlertPortalService);
+    constructor( private options: {
+        intermediateCollection: IntermediateCollection<DocumentType>,
+        errorHandler: ErrorHandler
+    } ) {}
     
-    constructor( private collection: IntermediateCollection<Doc> ) {}
+    public get rx() {
+        return this.options.intermediateCollection;
+    }
     
-    public create( document: ForCreate<Doc> ) {
+    public create( document: ForCreate<DocumentType> ) {
         return {
-            plain    : ( options?: { alertPortal?: string } ) => {
+            plain    : ( options?: { scope?: string } ) => {
                 return this.composePlainInputAndResultFromPromise( {
                     ...options,
                     input  : document,
-                    promise: ( value ) => this.collection.insert( {
+                    promise: ( value ) => this.options.intermediateCollection.insert( {
                         id: DocumentIdentifier(),
                         ...value
-                    } as Doc )
+                    } as DocumentType )
                 } );
             },
             safeguard: <InputParser extends z.ZodType<any, any, any>, ResultParser extends z.ZodType<any, any, any>>( options: {
                 inputDocument: InputParser,
                 resultDocument: ResultParser,
-                alertPortal?: string,
+                scope?: string,
             } ) => {
                 return this.composeSafeguardedInputAndResultFromPromise( {
                     ...options,
                     input  : document,
                     promise: ( value ) =>
-                        this.collection.insert( {
+                        this.options.intermediateCollection.insert( {
                             id: DocumentIdentifier(),
                             ...value
-                        } as Doc )
+                        } as DocumentType )
                 } );
             }
         };
@@ -48,38 +52,38 @@ export class Collection<Doc> {
         single  : {
             usingId   : ( id: string ) => {
                 return {
-                    plain    : ( options?: { alertPortal?: string } ) => {
+                    plain    : ( options?: { scope?: string } ) => {
                         return this.composePlainResultFromObservable( {
                             ...options,
-                            observable: () => this.collection.findOne( id ).$
+                            observable: () => this.options.intermediateCollection.findOne( id ).$
                         } );
                     },
                     safeguard: <ResultParser extends z.ZodType<any, any, any>>( options: {
                         resultDocument: ResultParser,
-                        alertPortal?: string
+                        scope?: string
                     } ) => {
                         return this.composeSafeguardedResultFromObservable( {
                             ...options,
-                            observable: () => this.collection.findOne( id ).$
+                            observable: () => this.options.intermediateCollection.findOne( id ).$
                         } );
                     }
                 };
             },
-            usingQuery: ( query: Parameters<typeof this.collection['findOne']>[0] ) => {
+            usingQuery: ( query: Parameters<typeof this.options.intermediateCollection['findOne']>[0] ) => {
                 return {
-                    plain    : ( options?: { alertPortal?: string } ) => {
+                    plain    : ( options?: { scope?: string } ) => {
                         return this.composePlainResultFromObservable( {
                             ...options,
-                            observable: () => this.collection.findOne( query ).$
+                            observable: () => this.options.intermediateCollection.findOne( query ).$
                         } );
                     },
                     safeguard: <ResultParser extends z.ZodType<any, any, any>>( options: {
                         resultDocument: ResultParser,
-                        alertPortal?: string
+                        scope?: string
                     } ) => {
                         return this.composeSafeguardedResultFromObservable( {
                             ...options,
-                            observable: () => this.collection.findOne( query ).$
+                            observable: () => this.options.intermediateCollection.findOne( query ).$
                         } );
                     }
                 };
@@ -88,61 +92,61 @@ export class Collection<Doc> {
         multiple: {
             usingIds  : ( ids: string[] ) => {
                 return {
-                    plain    : ( options?: { alertPortal?: string } ) => {
+                    plain    : ( options?: { scope?: string } ) => {
                         return this.composePlainResultFromObservable( {
                             ...options,
-                            observable: () => this.collection.findByIds( ids ).$.pipe(
+                            observable: () => this.options.intermediateCollection.findByIds( ids ).$.pipe(
                                 map( documents => [ ...documents ].map( document => document[ 1 ] ) )
                             )
                         } );
                     },
                     safeguard: <ResultParser extends z.ZodType<any, any, any>>( options: {
                         resultDocument: ResultParser,
-                        alertPortal?: string
+                        scope?: string
                     } ) => {
                         return this.composeSafeguardedResultFromObservable( {
                             ...options,
-                            observable: () => this.collection.findByIds( ids ).$.pipe(
+                            observable: () => this.options.intermediateCollection.findByIds( ids ).$.pipe(
                                 map( documents => [ ...documents ].map( document => document[ 1 ] ) )
                             )
                         } );
                     }
                 };
             },
-            usingQuery: ( query: Parameters<typeof this.collection['find']>[0] ) => {
+            usingQuery: ( query: Parameters<typeof this.options.intermediateCollection['find']>[0] ) => {
                 return {
-                    plain    : ( options?: { alertPortal?: string } ) => {
+                    plain    : ( options?: { scope?: string } ) => {
                         return this.composePlainResultFromObservable( {
                             ...options,
-                            observable: () => this.collection.find( query ).$
+                            observable: () => this.options.intermediateCollection.find( query ).$
                         } );
                     },
                     safeguard: <ResultParser extends z.ZodType<any, any, any>>( options: {
                         resultDocument: ResultParser,
-                        alertPortal?: string
+                        scope?: string
                     } ) => {
                         return this.composeSafeguardedResultFromObservable( {
                             ...options,
-                            observable: () => this.collection.find( query ).$
+                            observable: () => this.options.intermediateCollection.find( query ).$
                         } );
                     }
                 };
             }
         },
         all     : {
-            plain    : ( options?: { alertPortal?: string } ) => {
+            plain    : ( options?: { scope?: string } ) => {
                 return this.composePlainResultFromObservable( {
                     ...options,
-                    observable: () => this.collection.find().$
+                    observable: () => this.options.intermediateCollection.find().$
                 } );
             },
             safeguard: <ResultParser extends z.ZodType<any, any, any>>( options: {
                 resultDocument: ResultParser,
-                alertPortal?: string
+                scope?: string
             } ) => {
                 return this.composeSafeguardedResultFromObservable( {
                     ...options,
-                    observable: () => this.collection.find().$
+                    observable: () => this.options.intermediateCollection.find().$
                 } );
             }
         }
@@ -152,27 +156,27 @@ export class Collection<Doc> {
         single  : {
             usingId   : ( id: string ) => {
                 return {
-                    withDocument: ( document: ForUpdate<Doc> ) => {
+                    withDocument: ( document: ForUpdate<DocumentType> ) => {
                         return {
-                            plain    : ( options?: { alertPortal?: string } ) => {
+                            plain    : ( options?: { scope?: string } ) => {
                                 return this.composePlainInputAndResultFromPromise( {
                                     ...options,
                                     input  : document,
-                                    promise: ( value ) => this.collection.findOne( id ).exec().then( ( document ) => {
-                                        return document?.patch( value as Doc );
+                                    promise: ( value ) => this.options.intermediateCollection.findOne( id ).exec().then( ( document ) => {
+                                        return document?.patch( value as DocumentType );
                                     } )
                                 } );
                             },
                             safeguard: <InputParser extends z.ZodType<any, any, any>, ResultParser extends z.ZodType<any, any, any>>( options: {
                                 inputDocument: InputParser,
                                 resultDocument: ResultParser,
-                                alertPortal?: string
+                                scope?: string
                             } ) => {
                                 return this.composeSafeguardedInputAndResultFromPromise( {
                                     ...options,
                                     input  : document,
-                                    promise: ( value ) => this.collection.findOne( id ).exec().then( ( document ) => {
-                                        return document?.patch( value as Doc );
+                                    promise: ( value ) => this.options.intermediateCollection.findOne( id ).exec().then( ( document ) => {
+                                        return document?.patch( value as DocumentType );
                                     } )
                                 } );
                             }
@@ -180,29 +184,29 @@ export class Collection<Doc> {
                     }
                 };
             },
-            usingQuery: ( query: Parameters<typeof this.collection['findOne']>[0] ) => {
+            usingQuery: ( query: Parameters<typeof this.options.intermediateCollection['findOne']>[0] ) => {
                 return {
-                    withDocument: ( document: ForUpdate<Doc> ) => {
+                    withDocument: ( document: ForUpdate<DocumentType> ) => {
                         return {
-                            plain    : ( options?: { alertPortal?: string } ) => {
+                            plain    : ( options?: { scope?: string } ) => {
                                 return this.composePlainInputAndResultFromPromise( {
                                     ...options,
                                     input  : document,
-                                    promise: ( value ) => this.collection.findOne( query ).exec().then( ( document ) => {
-                                        return document?.patch( value as Doc );
+                                    promise: ( value ) => this.options.intermediateCollection.findOne( query ).exec().then( ( document ) => {
+                                        return document?.patch( value as DocumentType );
                                     } )
                                 } );
                             },
                             safeguard: <InputParser extends z.ZodType<any, any, any>, ResultParser extends z.ZodType<any, any, any>>( options: {
                                 inputDocument: InputParser,
                                 resultDocument: ResultParser,
-                                alertPortal?: string
+                                scope?: string
                             } ) => {
                                 return this.composeSafeguardedInputAndResultFromPromise( {
                                     ...options,
                                     input  : document,
-                                    promise: ( value ) => this.collection.findOne( query ).exec().then( ( document ) => {
-                                        return document?.patch( value as Doc );
+                                    promise: ( value ) => this.options.intermediateCollection.findOne( query ).exec().then( ( document ) => {
+                                        return document?.patch( value as DocumentType );
                                     } )
                                 } );
                             }
@@ -212,29 +216,29 @@ export class Collection<Doc> {
             }
         },
         multiple: {
-            usingQuery: ( query: Parameters<typeof this.collection['find']>[0] ) => {
+            usingQuery: ( query: Parameters<typeof this.options.intermediateCollection['find']>[0] ) => {
                 return {
-                    withDocument: ( document: ForUpdate<Doc> ) => {
+                    withDocument: ( document: ForUpdate<DocumentType> ) => {
                         return {
-                            plain    : ( options?: { alertPortal?: string } ) => {
+                            plain    : ( options?: { scope?: string } ) => {
                                 return this.composePlainInputAndResultFromPromise( {
                                     ...options,
                                     input  : document,
-                                    promise: ( value ) => this.collection.find( query ).exec().then( ( documents ) => {
-                                        return Promise.all( documents.map( document => document.patch( value as Doc ) ) );
+                                    promise: ( value ) => this.options.intermediateCollection.find( query ).exec().then( ( documents ) => {
+                                        return Promise.all( documents.map( document => document.patch( value as DocumentType ) ) );
                                     } )
                                 } );
                             },
                             safeguard: <InputParser extends z.ZodType<any, any, any>, ResultParser extends z.ZodType<any, any, any>>( options: {
                                 inputDocument: InputParser,
                                 resultDocument: ResultParser,
-                                alertPortal?: string
+                                scope?: string
                             } ) => {
                                 return this.composeSafeguardedInputAndResultFromPromise( {
                                     ...options,
                                     input  : document,
-                                    promise: ( value ) => this.collection.find( query ).exec().then( ( documents ) => {
-                                        return Promise.all( documents.map( document => document.patch( value as Doc ) ) );
+                                    promise: ( value ) => this.options.intermediateCollection.find( query ).exec().then( ( documents ) => {
+                                        return Promise.all( documents.map( document => document.patch( value as DocumentType ) ) );
                                     } )
                                 } );
                             }
@@ -248,40 +252,40 @@ export class Collection<Doc> {
     public delete = {
         usingId   : ( id: string ) => {
             return {
-                plain    : ( options?: { alertPortal?: string } ) => {
+                plain    : ( options?: { scope?: string } ) => {
                     return this.composePlainResultFromPromise( {
                         ...options,
-                        promise: () => this.collection.findOne( id ).remove()
+                        promise: () => this.options.intermediateCollection.findOne( id ).remove()
                     } );
                 },
                 safeguard: <ResultParser extends z.ZodType<any, any, any>>( options: {
                     resultDocument: ResultParser,
-                    alertPortal?: string
+                    scope?: string
                 } ) => {
                     return this.composeSafeguardedResultFromPromise( {
                         ...options,
-                        promise: () => this.collection.findOne( id ).remove()
+                        promise: () => this.options.intermediateCollection.findOne( id ).remove()
                     } );
                 }
             };
         },
-        usingQuery: ( query: Parameters<typeof this.collection['find']>[0] ) => {
+        usingQuery: ( query: Parameters<typeof this.options.intermediateCollection['find']>[0] ) => {
             return {
-                plain    : ( options?: { alertPortal?: string } ) => {
+                plain    : ( options?: { scope?: string } ) => {
                     return this.composePlainResultFromPromise( {
                         ...options,
-                        promise: () => this.collection.find( query ).exec().then( ( documents ) => {
+                        promise: () => this.options.intermediateCollection.find( query ).exec().then( ( documents ) => {
                             return Promise.all( documents.map( document => document.remove() ) );
                         } )
                     } );
                 },
                 safeguard: <ResultParser extends z.ZodType<any, any, any>>( options: {
                     resultDocument: ResultParser,
-                    alertPortal?: string
+                    scope?: string
                 } ) => {
                     return this.composeSafeguardedResultFromPromise( {
                         ...options,
-                        promise: () => this.collection.find( query ).exec().then( ( documents ) => {
+                        promise: () => this.options.intermediateCollection.find( query ).exec().then( ( documents ) => {
                             return Promise.all( documents.map( document => document.remove() ) );
                         } )
                     } );
@@ -295,7 +299,7 @@ export class Collection<Doc> {
         OriginalResultType
     >( composeOptions: {
         input: OriginalInputType,
-        alertPortal?: string,
+        scope?: string,
         promise: ( input: OriginalInputType ) => Promise<OriginalResultType>
     } ) {
         
@@ -315,8 +319,8 @@ export class Collection<Doc> {
                 
             } ).catch( ( error ) => {
                 
-                if ( composeOptions.alertPortal ) {
-                    this.emitRxError( error, composeOptions.alertPortal );
+                if ( composeOptions.scope ) {
+                    this.handleRxError( error, composeOptions.scope );
                 }
                 
                 options?.onError?.( error );
@@ -353,7 +357,7 @@ export class Collection<Doc> {
         input: OriginalInputType,
         inputDocument: InputParser,
         resultDocument: ResultParser,
-        alertPortal?: string,
+        scope?: string,
         promise: ( input: OriginalInputType ) => Promise<any>
     } ) {
         
@@ -367,17 +371,17 @@ export class Collection<Doc> {
             
             if ( !parsedInput.success ) {
                 
-                if ( composeOptions.alertPortal ) {
-                    this.alert.emit( composeOptions.alertPortal, {
-                        type       : 'error',
-                        title      : 'Verarbeitungsfehler',
-                        description: 'Bei der Kontrolle der Eingabedaten sind Unstimmigkeiten aufgetreten. ' +
+                if ( composeOptions.scope ) {
+                    this.options.errorHandler( {
+                        scope     : composeOptions.scope,
+                        head      : 'Verarbeitungsfehler',
+                        body      : 'Bei der Kontrolle der Eingabedaten sind Unstimmigkeiten aufgetreten. ' +
                             'Es wird ein anderes Format erwartet.\n' +
                             'Folgender Fehlerbericht wurde erzeugt:',
-                        code       : JSON.stringify( {
+                        stacktrace: JSON.stringify( {
                             received    : composeOptions.input,
                             zodException: parsedInput.error
-                        }, null, 2 )
+                        }, null, 4 )
                     } );
                 }
                 
@@ -396,17 +400,17 @@ export class Collection<Doc> {
                     
                     if ( !parsedResult.success ) {
                         
-                        if ( composeOptions.alertPortal ) {
-                            this.alert.emit( composeOptions.alertPortal, {
-                                type       : 'error',
-                                title      : 'Verarbeitungsfehler',
-                                description: 'Bei der Kontrolle der Daten von der Datenbank sind Unstimmigkeiten aufgetreten. ' +
+                        if ( composeOptions.scope ) {
+                            this.options.errorHandler( {
+                                scope     : composeOptions.scope,
+                                head      : 'Verarbeitungsfehler',
+                                body      : 'Bei der Kontrolle der Daten von der Datenbank sind Unstimmigkeiten aufgetreten. ' +
                                     'Es wird ein anderes Format erwartet.\n' +
                                     'Folgender Fehlerbericht wurde erzeugt:',
-                                code       : JSON.stringify( {
+                                stacktrace: JSON.stringify( {
                                     received    : result,
                                     zodException: parsedResult.error
-                                }, null, 2 )
+                                }, null, 4 )
                             } );
                         }
                         
@@ -420,8 +424,8 @@ export class Collection<Doc> {
                     
                 } ).catch( ( error ) => {
                     
-                    if ( composeOptions.alertPortal ) {
-                        this.emitRxError( error, composeOptions.alertPortal );
+                    if ( composeOptions.scope ) {
+                        this.handleRxError( error, composeOptions.scope );
                     }
                     
                     options?.onError?.( error );
@@ -452,7 +456,7 @@ export class Collection<Doc> {
     }
     
     private composePlainResultFromPromise<OriginalResultType>( composeOptions: {
-        alertPortal?: string,
+        scope?: string,
         promise: () => Promise<OriginalResultType>
     } ) {
         
@@ -472,8 +476,8 @@ export class Collection<Doc> {
                 
             } ).catch( ( error ) => {
                 
-                if ( composeOptions.alertPortal ) {
-                    this.emitRxError( error, composeOptions.alertPortal );
+                if ( composeOptions.scope ) {
+                    this.handleRxError( error, composeOptions.scope );
                 }
                 
                 options?.onError?.( error );
@@ -506,7 +510,7 @@ export class Collection<Doc> {
         ParsedResultType = z.infer<ResultParser>
     >( composeOptions: {
         resultDocument: ResultParser,
-        alertPortal?: string,
+        scope?: string,
         promise: () => Promise<any>
     } ) {
         
@@ -527,14 +531,14 @@ export class Collection<Doc> {
                     
                     if ( !parsedResult.success ) {
                         
-                        if ( composeOptions.alertPortal ) {
-                            this.alert.emit( composeOptions.alertPortal, {
-                                type       : 'error',
-                                title      : 'Verarbeitungsfehler',
-                                description: 'Bei der Kontrolle der Daten von der Datenbank sind Unstimmigkeiten aufgetreten. ' +
+                        if ( composeOptions.scope ) {
+                            this.options.errorHandler( {
+                                scope     : composeOptions.scope,
+                                head      : 'Verarbeitungsfehler',
+                                body      : 'Bei der Kontrolle der Daten von der Datenbank sind Unstimmigkeiten aufgetreten. ' +
                                     'Es wird ein anderes Format erwartet.\n' +
                                     'Folgender Fehlerbericht wurde erzeugt:',
-                                code       : JSON.stringify( {
+                                stacktrace: JSON.stringify( {
                                     received    : result,
                                     zodException: parsedResult.error
                                 }, null, 2 )
@@ -551,8 +555,8 @@ export class Collection<Doc> {
                     
                 } ).catch( ( error ) => {
                     
-                    if ( composeOptions.alertPortal ) {
-                        this.emitRxError( error, composeOptions.alertPortal );
+                    if ( composeOptions.scope ) {
+                        this.handleRxError( error, composeOptions.scope );
                     }
                     
                     options?.onError?.( error );
@@ -583,7 +587,7 @@ export class Collection<Doc> {
     }
     
     private composePlainResultFromObservable<DocumentResult>( composeOptions: {
-        alertPortal?: string,
+        scope?: string,
         observable: () => BehaviorSubject<DocumentResult> | Observable<DocumentResult>
     } ) {
         
@@ -601,8 +605,8 @@ export class Collection<Doc> {
                 startEmittingAfter( options?.delayBegin ),
                 catchError( ( error ) => {
                     
-                    if ( composeOptions.alertPortal ) {
-                        this.emitRxError( error, composeOptions.alertPortal );
+                    if ( composeOptions.scope ) {
+                        this.handleRxError( error, composeOptions.scope );
                     }
                     
                     options?.onError?.( error );
@@ -647,7 +651,7 @@ export class Collection<Doc> {
         Result = z.infer<NonNullable<ResultParser>>
     >( composeOptions: {
         resultDocument: ResultParser,
-        alertPortal?: string,
+        scope?: string,
         observable: () => BehaviorSubject<DocumentResult> | Observable<DocumentResult>
     } ) {
         
@@ -665,8 +669,8 @@ export class Collection<Doc> {
                 startEmittingAfter( options?.delayBegin ),
                 catchError( ( error ) => {
                     
-                    if ( composeOptions.alertPortal ) {
-                        this.emitRxError( error, composeOptions.alertPortal );
+                    if ( composeOptions.scope ) {
+                        this.handleRxError( error, composeOptions.scope );
                     }
                     
                     options?.onError?.( error );
@@ -687,17 +691,17 @@ export class Collection<Doc> {
                         
                     } else {
                         
-                        if ( composeOptions.alertPortal ) {
-                            this.alert.emit( composeOptions.alertPortal, {
-                                type       : 'error',
-                                title      : 'Verarbeitungsfehler',
-                                description: 'Bei der Kontrolle der Daten von der Datenbank sind Unstimmigkeiten aufgetreten. ' +
+                        if ( composeOptions.scope ) {
+                            this.options.errorHandler( {
+                                scope     : composeOptions.scope,
+                                head      : 'Verarbeitungsfehler',
+                                body      : 'Bei der Kontrolle der Daten von der Datenbank sind Unstimmigkeiten aufgetreten. ' +
                                     'Es wird ein anderes Format erwartet.\n' +
                                     'Folgender Fehlerbericht wurde erzeugt:',
-                                code       : JSON.stringify( {
+                                stacktrace: JSON.stringify( {
                                     received    : result,
                                     zodException: parsed.error
-                                }, null, 2 )
+                                }, null, 4 )
                             } );
                         }
                         
@@ -741,13 +745,13 @@ export class Collection<Doc> {
         };
     }
     
-    private emitRxError( error: RxError, portal: string ) {
-        this.alert.emit( portal, {
-            type       : 'error',
-            title      : 'Datenbankfehler',
-            description: 'Es ist ein bisher undokumentierter Fehler aufgetreten\n' +
+    private handleRxError( error: RxError, scope: string ) {
+        this.options.errorHandler( {
+            scope     : scope,
+            head      : 'Datenbankfehler',
+            body      : 'Es ist ein bisher undokumentierter Fehler aufgetreten\n' +
                 'Folgender Fehlerbericht wurde erzeugt:',
-            code       : error.toString()
+            stacktrace: error.toString()
         } );
     }
 }

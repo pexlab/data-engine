@@ -2,12 +2,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DataEngineModule } from '@pexlab/ngx-data-engine';
 import { FeModule, FeRootModule, MarkdownComponent } from '@pexlab/ngx-front-engine';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { DataEngineModule } from '../../../ngx-lib/src/data-engine/data-engine.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { definitions } from './definitions';
+import { DataEngineServiceProvider } from './services/data-engine.service';
 import { GettingStartedComponent } from './pages/getting-started/getting-started.component';
 import { IntroductionComponent } from './pages/introduction/introduction.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
@@ -40,7 +40,7 @@ import { ShowcaseSidebarComponent } from './pages/showcase/sidebar/showcase-side
             FeRootModule,
             MarkdownComponent,
             
-            DataEngineModule.forRoot( { definitions } )
+            DataEngineModule.forRoot( { serviceProvider: DataEngineServiceProvider } )
         ],
         
         providers: [],

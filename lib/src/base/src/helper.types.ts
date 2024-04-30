@@ -1,6 +1,6 @@
-import { Definition } from './types';
+import { Definitions } from './types';
 
-export function Define<T extends Record<string, Definition>>( def: T ) {
+export function Define<T extends Definitions>( def: T ) {
     return def;
 }
 

@@ -1,14 +1,14 @@
-import { Define } from '@pexlab/data-engine';
+import { CreateDataEngineServiceProvider } from '@pexlab/ngx-data-engine';
 
-export const definitions = Define( {
+export const DataEngineServiceProvider = CreateDataEngineServiceProvider( {
     a: {
         type      : 'object',
         version   : 0,
         primaryKey: 'id',
         properties: {
-            id : { type: 'string', maxLength: 12 },
-            str: { type: 'string' },
-            arr: { type: 'array', ref: 'b', items: { type: 'string' } }
+            id    : { type: 'string', maxLength: 12 },
+            str   : { type: 'string' },
+            b_of_a: { type: 'array', ref: 'b', items: { type: 'string' } }
         },
         required  : [ 'id', 'str', 'arr' ]
     },
@@ -22,4 +22,4 @@ export const definitions = Define( {
         },
         required  : [ 'id', 'bool' ]
     }
-} );
+} as const );

@@ -31,9 +31,9 @@
   "homepage": "https://pexlab.net/projects/data-engine",
   "scripts": {
     "serve_docs": "ng serve --configuration development --project docs",
-    "serve_ngx_lib": "ng build --configuration development --project ngx-lib --watch",
+    "serve_ngx_lib": "ng build --configuration development --project lib --watch",
     "build_docs": "ng build --configuration production --project docs --base-href https://www.pexlab.net/projects/data-engine/",
-    "build_ngx_lib": "ng build --configuration production --project ngx-lib"
+    "build_ngx_lib": "ng build --configuration production --project lib"
   },
   "dependencies": {
     "@angular/animations": "^17.3.0",
@@ -45,6 +45,7 @@
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
     "@pexlab/ngx-front-engine": "^0.0.84",
+    "foundationdb": "^2.0.1",
     "nanoid": "^5.0.7",
     "p-lazy": "^4.0.0",
     "p-min-delay": "^4.0.2",
@@ -69,6 +70,8 @@
     "typescript": "~5.4.2"
   },
   "trustedDependencies": [
+    "esbuild",
+    "foundationdb",
     "protobufjs",
     "rxdb"
   ]

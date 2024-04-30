@@ -7,13 +7,13 @@
         "noImplicitOverride"                : true,
         "noPropertyAccessFromIndexSignature": true,
         "paths"                             : {
-            "@pexlab/ngx-data-engine": [
+            "@pexlab/ngx-data-engine" : [
                 "./dist/ngx-data-engine"
             ],
-            "@pexlab/data-engine"    : [
-                "./lib"
+            "@pexlab/base-data-engine": [
+                "./lib/src/base/src"
             ],
-            "@pexlab/rxdb"           : [
+            "@pexlab/rxdb"            : [
                 "./node_modules/rxdb",
                 "./node_modules/rxdb/src/types"
             ]
